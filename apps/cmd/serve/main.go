@@ -7,6 +7,7 @@ import (
 
 	"mini-blog/internal/config"
 	"mini-blog/internal/controller"
+	"mini-blog/internal/middleware"
 	"mini-blog/internal/repository"
 	"mini-blog/internal/service"
 
@@ -55,7 +56,7 @@ func setupRouter(
 	r := gin.Default()
 
 	// 2.配置路由
-	v1 := r.Group("/api/v1")
+	v1 := r.Group("/api/v1", middleware.ErrorHandlerMiddleware())
 	// 3.分组路由
 	{
 		public := v1.Group("/public")

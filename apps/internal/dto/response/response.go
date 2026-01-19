@@ -4,6 +4,8 @@ package response
 import (
 	"net/http"
 
+	"mini-blog/internal/dto/errmsg"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -37,5 +39,13 @@ func Fail(c *gin.Context, statusCode int, code int, msg string) {
 	c.JSON(statusCode, Response{
 		Code: code,
 		Msg:  msg,
+	})
+}
+
+// BizErrFail 业务异常
+func BizErrFail(c *gin.Context, bizErr errmsg.BizErr) {
+	c.JSON(http.StatusOK, Response{
+		Code: bizErr.Code,
+		Msg:  bizErr.Msg,
 	})
 }

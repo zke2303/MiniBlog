@@ -2,8 +2,7 @@
 package controller
 
 import (
-	"net/http"
-
+	"mini-blog/internal/dto/errmsg"
 	"mini-blog/internal/dto/request"
 	"mini-blog/internal/dto/response"
 	"mini-blog/internal/service"
@@ -27,13 +26,13 @@ func NewUserController(svc *service.UserService) *UserController {
 func (h *UserController) Create(c *gin.Context) {
 	var req request.CreateUserRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		response.Fail(c, http.StatusBadRequest, 400, "参数错误")
+		_ = c.Error(errmsg.InvalidParamErr.Wrap(err))
 		return
 	}
 
 	id, err := h.svc.Create(c, req)
 	if err != nil {
-		response.Fail(c, http.StatusBadRequest, 400, "服务器内部错误")
+		_ = c.Error(err)
 		return
 	}
 
