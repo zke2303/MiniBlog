@@ -33,7 +33,7 @@ func (h *UserController) Create(c *gin.Context) {
 
 	id, err := h.svc.Create(c, req)
 	if err != nil {
-		response.Fail(c, http.StatusBadRequest, 400, "参数错误")
+		response.Fail(c, http.StatusBadRequest, 400, "服务器内部错误")
 		return
 	}
 

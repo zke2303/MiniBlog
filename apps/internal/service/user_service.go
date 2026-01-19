@@ -4,6 +4,7 @@ package service
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"mini-blog/internal/dto/request"
 	"mini-blog/internal/model"
@@ -21,8 +22,9 @@ type UserService struct {
 }
 
 // NewUserService 创建 UserService 实例对象
-func NewUserService(repo repository.IUserRepository) *UserService {
+func NewUserService(db *gorm.DB, repo repository.IUserRepository) *UserService {
 	return &UserService{
+		db:   db,
 		repo: repo,
 	}
 }
@@ -54,11 +56,13 @@ func (svc *UserService) Create(ctx context.Context, req request.CreateUserReques
 	// 5.调用repository层, 使用事务
 	err = svc.db.Transaction(func(tx *gorm.DB) error {
 		if err := svc.repo.Create(ctx, svc.db, user); err != nil {
+			fmt.Printf(err.Error())
 			return err
 		}
 		return nil
 	})
 	if err != nil {
+		fmt.Printf(err.Error())
 		return "", err
 	}
 
@@ -67,5 +71,5 @@ func (svc *UserService) Create(ctx context.Context, req request.CreateUserReques
 
 // validUsernameAndPassword 校验 Username 和 Password 的合法性
 func validUsernameAndPassword(username string, password string) error {
-	return errors.New("error")
+	return nil
 }
