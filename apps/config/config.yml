@@ -4,4 +4,4 @@ serve:
 
 datasource:
   postgres:
-    dsn: postgres://postgres:root@47.110.74.7:5432/mini-blog?sslmode=disable&TimeZone=Asia/Shanghai
+    dsn: postgres://postgres:root@47.110.74.7:5432/mini_blog?sslmode=disable&TimeZone=Asia/Shanghai
