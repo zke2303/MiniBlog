@@ -14,9 +14,12 @@ func (bizErr *BizErr) Error() string {
 }
 
 // Wrap 保持异常
-func (bizErr *BizErr) Wrap(err error) error {
-	bizErr.Cause = err
-	return bizErr
+func (bizErr BizErr) Wrap(err error) *BizErr {
+	return &BizErr{
+		Code:  bizErr.Code,
+		Msg:   bizErr.Msg,
+		Cause: err,
+	}
 }
 
 // New 创建一个新的 错误 实例对象

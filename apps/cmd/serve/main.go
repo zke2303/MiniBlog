@@ -24,6 +24,12 @@ func main() {
 	if err != nil {
 		log.Fatal("error: %w", err)
 	}
+
+	// 注册 全局翻译器
+	if err := common.InitTranslation(); err != nil {
+		log.Fatal("初始化翻译器错误: ", err)
+	}
+
 	// 2.连接数据库
 	db, err := gorm.Open(postgres.Open(cfg.Datasource.Postgres.Dsn), &gorm.Config{})
 	if err != nil {
@@ -44,9 +50,6 @@ func main() {
 	// 7.设置 gin 启动模式
 	gin.SetMode(cfg.Serve.Mode)
 
-	// 注册 全局翻译器
-	common.InitTranslation()
-
 	// 8.启动服务
 	addr := fmt.Sprintf("%s:%d", "localhost", cfg.Serve.Port)
 	log.Fatal(r.Run(addr))
@@ -60,7 +63,7 @@ func setupRouter(
 	r := gin.Default()
 
 	// 2.配置路由
-	v1 := r.Group("/api/v1", middleware.ErrorHandlerMiddleware())
+	v1 := r.Group("/api/v1", middleware.ErrorHandlerMiddleware(common.GlobalTrans))
 	// 3.分组路由
 	{
 		public := v1.Group("/public")

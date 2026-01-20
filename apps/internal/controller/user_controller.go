@@ -2,7 +2,6 @@
 package controller
 
 import (
-	"mini-blog/internal/dto/errmsg"
 	"mini-blog/internal/dto/request"
 	"mini-blog/internal/dto/response"
 	"mini-blog/internal/service"
@@ -26,7 +25,7 @@ func NewUserController(svc *service.UserService) *UserController {
 func (h *UserController) Create(c *gin.Context) {
 	var req request.CreateUserRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		_ = c.Error(errmsg.InvalidParamErr.Wrap(err))
+		_ = c.Error(err)
 		return
 	}
 

@@ -2,36 +2,60 @@
 package middleware
 
 import (
-	"errors"
-	"fmt"
+	"encoding/json"
 
 	"mini-blog/internal/dto/errmsg"
 	"mini-blog/internal/dto/response"
 
 	"github.com/gin-gonic/gin"
+	ut "github.com/go-playground/universal-translator"
+	"github.com/go-playground/validator/v10"
 )
 
 // ErrorHandlerMiddleware 错误处理中间件
-func ErrorHandlerMiddleware() gin.HandlerFunc {
+func ErrorHandlerMiddleware(trans ut.Translator) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// 放行，让 gin 先处理后面的逻辑
 		c.Next()
 		// 判断是否存在 error
-		if len(c.Errors) > 0 {
-			// 获取 gin 调用链中的最后一个错误
-			last := c.Errors.Last()
-			// 判断错误类型
-			var bizErr *errmsg.BizErr
-			// 如果是 自定义错误， 返回 自定义错误的信息
-			if errors.As(last, &bizErr) {
-				response.BizErrFail(c, *bizErr)
-			} else {
-				// 如果是系统级错误（如数据库崩溃、空指针），屏蔽细节，返回“服务器内部错误”
-				// 同时可以在这里打印日志方便排查
-				fmt.Printf("[Internal Error] %v\n", last.Err)
-				response.BizErrFail(c, errmsg.InternalErr)
-			}
-			c.Abort()
+		if len(c.Errors) == 0 {
+			return
 		}
+
+		err := c.Errors.Last().Err
+		// 判断错误类型
+		// 1) Validtor 校验错误
+		if verrs, ok := err.(validator.ValidationErrors); ok {
+			errs := make(map[string]string)
+			for _, e := range verrs {
+				errs[e.Field()] = e.Translate(trans)
+			}
+
+			c.JSON(400, response.Response{
+				Code:   errmsg.CodeInvalidParam,
+				Msg:    "参数校验错误",
+				Errors: errs,
+			})
+			return
+		}
+
+		// 2) JSON 解析错误 (SyntaxError 或 UnmarshalTypeError)
+		if _, ok := err.(*json.UnmarshalTypeError); ok {
+			response.BizErrFail(c, errmsg.InvalidParamErr)
+			return
+		}
+		if _, ok := err.(*json.SyntaxError); ok {
+			response.BizErrFail(c, errmsg.InvalidParamErr)
+			return
+		}
+
+		// 3) 业务错误
+		if bizErr, ok := err.(*errmsg.BizErr); ok {
+			response.BizErrFail(c, *bizErr)
+			return
+		}
+
+		// 3) 未知错误
+		response.BizErrFail(c, errmsg.InternalErr)
 	}
 }
