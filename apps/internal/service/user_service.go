@@ -3,6 +3,7 @@ package service
 
 import (
 	"context"
+	"errors"
 
 	"mini-blog/internal/dto/errmsg"
 	"mini-blog/internal/dto/request"
@@ -60,4 +61,24 @@ func (svc *UserService) Create(ctx context.Context, req request.CreateUserReques
 	}
 
 	return uuid.String(), nil
+}
+
+// GetByID 根据用户id查询用户信息
+func (svc *UserService) GetByID(ctx context.Context, userID string) (model.User, error) {
+	// 1.校验id格式
+	_, err := uuid.Parse(userID)
+	if err != nil {
+		return model.User{}, errmsg.InternalErr.Wrap(err)
+	}
+
+	// 2. 调用 repository 层,执行 sql 查询操作
+	user, err := svc.repo.GetByID(ctx, svc.db, userID)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return model.User{}, errmsg.UserNotFound
+		}
+	}
+
+	// 3.执行成功,返回查询结构
+	return user, nil
 }

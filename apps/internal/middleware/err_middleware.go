@@ -41,11 +41,11 @@ func ErrorHandlerMiddleware(trans ut.Translator) gin.HandlerFunc {
 
 		// 2) JSON 解析错误 (SyntaxError 或 UnmarshalTypeError)
 		if _, ok := err.(*json.UnmarshalTypeError); ok {
-			response.BizErrFail(c, errmsg.InvalidParamErr)
+			response.BizErrFail(c, *errmsg.InvalidParamErr)
 			return
 		}
 		if _, ok := err.(*json.SyntaxError); ok {
-			response.BizErrFail(c, errmsg.InvalidParamErr)
+			response.BizErrFail(c, *errmsg.InvalidParamErr)
 			return
 		}
 
@@ -56,6 +56,6 @@ func ErrorHandlerMiddleware(trans ut.Translator) gin.HandlerFunc {
 		}
 
 		// 3) 未知错误
-		response.BizErrFail(c, errmsg.InternalErr)
+		response.BizErrFail(c, *errmsg.InternalErr)
 	}
 }

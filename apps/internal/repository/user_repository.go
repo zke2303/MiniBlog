@@ -12,6 +12,7 @@ import (
 // IUserRepository UserRepository接口
 type IUserRepository interface {
 	Create(ctx context.Context, db *gorm.DB, user model.User) error
+	GetByID(ctx context.Context, db *gorm.DB, userID string) (model.User, error)
 }
 
 // UserRepository UserRepository 实例化对象
@@ -30,4 +31,15 @@ func (repo *UserRepository) Create(ctx context.Context, db *gorm.DB, user model.
 	}
 
 	return nil
+}
+
+// GetByID 根据 userID 查询用户信息
+func (repo *UserRepository) GetByID(ctx context.Context, db *gorm.DB, userID string) (model.User, error) {
+	var user model.User
+	result := db.WithContext(ctx).Where("id = ?", userID).First(&user)
+	if result.Error != nil {
+		return model.User{}, result.Error
+	}
+
+	return user, nil
 }

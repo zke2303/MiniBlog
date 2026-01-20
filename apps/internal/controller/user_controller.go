@@ -37,3 +37,26 @@ func (h *UserController) Create(c *gin.Context) {
 
 	response.Success(c, id)
 }
+
+// Profile 查询当前登入用户信息
+// @Summary 获取当前登录用户的信息
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param none
+// @Success 200 {object}
+// @router /api/v1/auth/profile [get]
+func (h *UserController) Profile(c *gin.Context) {
+	// 1.获取当前登入的用户id
+	// TODO: userID 应该从 context 中获取
+	// userId := c.GetString("userID")
+	userID := "019bd98d-b26a-700c-bfa1-054da20048e8"
+	// 2.调用 service 层
+	user, err := h.svc.GetByID(c.Request.Context(), userID)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+	// 3.返回用户信息
+	response.Success(c, user)
+}

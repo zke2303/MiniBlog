@@ -22,7 +22,7 @@ func main() {
 	// 1.读取配置文件
 	cfg, err := config.ConfigurationInit()
 	if err != nil {
-		log.Fatal("error: %w", err)
+		log.Fatal("读取配置文件失败: %w", err)
 	}
 
 	// 注册 全局翻译器
@@ -71,6 +71,7 @@ func setupRouter(
 			users := public.Group("/users")
 			{
 				users.POST("", userController.Create)
+				users.GET("", userController.Profile)
 			}
 		}
 	}
