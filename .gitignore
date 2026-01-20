@@ -51,3 +51,6 @@ npm-debug.log*
 # Database/Cache (local dev)
 dump.rdb
 *.db
+
+# ageng skills
+.agent/**
