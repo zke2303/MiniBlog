@@ -71,7 +71,14 @@ func setupRouter(
 			users := public.Group("/users")
 			{
 				users.POST("", userController.Create)
-				users.GET("", userController.Profile)
+			}
+		}
+
+		auth := v1.Group("/auth", middleware.AuthMiddleware())
+		{
+			users := auth.Group("/users")
+			{
+				users.GET("/profile", userController.Profile)
 			}
 		}
 	}
