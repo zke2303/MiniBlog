@@ -11,9 +11,10 @@ import (
 
 // Response 请求响应对象
 type Response struct {
-	Code int    `json:"code"`
-	Msg  string `json:"msg"`
-	Data any    `json:"data,omitempty"`
+	Code   int    `json:"code"`             // 错误码
+	Msg    string `json:"msg"`              // 错误描述
+	Data   any    `json:"data,omitempty"`   // 响应数据
+	Errors any    `json:"errors,omitempty"` // 错误详细描述
 }
 
 // New 快速创建 Response 对象

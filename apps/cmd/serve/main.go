@@ -8,6 +8,7 @@ import (
 	"mini-blog/internal/config"
 	"mini-blog/internal/controller"
 	"mini-blog/internal/middleware"
+	"mini-blog/internal/pkg/common"
 	"mini-blog/internal/repository"
 	"mini-blog/internal/service"
 
@@ -42,6 +43,9 @@ func main() {
 
 	// 7.设置 gin 启动模式
 	gin.SetMode(cfg.Serve.Mode)
+
+	// 注册 全局翻译器
+	common.InitTranslation()
 
 	// 8.启动服务
 	addr := fmt.Sprintf("%s:%d", "localhost", cfg.Serve.Port)
