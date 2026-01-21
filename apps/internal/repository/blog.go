@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"mini-blog/internal/dto/errmsg"
+	"mini-blog/internal/dto/request"
 	"mini-blog/internal/model"
 
 	"github.com/redis/go-redis/v9"
@@ -34,4 +35,8 @@ func (repo *BlogRepository) Create(ctx context.Context, db *gorm.DB, blog model.
 		return errmsg.InternalErr.Wrap(res.Error)
 	}
 	return nil
+}
+
+// ListBlogs
+func (repo *BlogRepository) ListBlogs(ctx context.Context, db *gorm.DB, req request.BlogsPageQuery) ([]model.Blog, error) {
 }

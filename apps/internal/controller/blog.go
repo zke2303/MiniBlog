@@ -46,3 +46,29 @@ func (h *BlogController) Create(c *gin.Context) {
 	// 响应 blog id
 	response.Success(c, id)
 }
+
+// ListBlogs 查询Blogs的概述列表
+// @Summary 查询Blogs的概述列表
+// @Tags blogs
+// @Accept json
+// @Produce json
+// @Param body {object}
+// @Success 200 {object} response.Response{data = }
+// @Route /blogs [get]
+func (h *BlogController) ListBlogs(c *gin.Context) {
+	// 1.绑定并校验请求体参数
+	var req request.BlogsPageQuery
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.Error(err)
+		return
+	}
+	// 2.调用 service 层
+	blogs, err := h.svc.ListBlogs(c.Request.Context(), req)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+
+	// 3.返回查询结果
+	response.Success(c, blogs)
+}

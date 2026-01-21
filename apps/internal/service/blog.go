@@ -65,3 +65,8 @@ func (svc *BlogService) Create(ctx context.Context, userID string, req request.C
 	// 6.返回 blog id
 	return blog.ID.String(), nil
 }
+
+func (svc *BlogService) ListBlogs(ctx context.Context, req request.BlogsPageQuery) ([]model.Blog, error) {
+	// 1.调用 repository 层
+	return svc.repo.ListBlogs(ctx, svc.db, req)
+}

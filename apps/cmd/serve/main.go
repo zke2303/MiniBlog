@@ -43,7 +43,7 @@ func main() {
 	})
 	// 3.创建 repository 实例对象
 	userRepo := repository.NewUserRepository()
-	blogRepo := repository.NewBlogRepository()
+	blogRepo := repository.NewBlogRepository(rdb)
 	// 4.创建 service 实例对象
 	userService := service.NewUserService(db, userRepo)
 	blogService := service.NewBlogService(blogRepo, db)
@@ -93,6 +93,7 @@ func setupRouter(
 			blogs := protected.Group("/blogs")
 			{
 				blogs.POST("/", blogController.Create)
+				blogs.GET("/", blogController.ListBlogs)
 			}
 		}
 	}
