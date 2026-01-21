@@ -32,6 +32,12 @@ func NewUserService(db *gorm.DB, repo repository.IUserRepository) *UserService {
 
 // Create 创建用户
 func (svc *UserService) Create(ctx context.Context, req request.CreateUserRequest) (string, error) {
+	// 1.判断当前 Username 是否已经被注册
+	_, err := svc.repo.GetByUsername(ctx, svc.db, req.Username)
+	if err == nil {
+		return "", errmsg.UserAlreadyExists
+	}
+
 	// 2.生成 uuid
 	uuid, err := uuid.NewV7()
 	if err != nil {

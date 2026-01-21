@@ -45,8 +45,9 @@ const (
 	CodeInternal     = 10000
 	CodeInvalidParam = 10001
 
-	CodeUserNotFoune  = 20001
-	CodePasswordError = 20002
+	CodeUserNotFoune     = 20001
+	CodePasswordError    = 20002
+	CodeUserAleadyExists = 20003
 )
 
 // 定义错误
@@ -56,5 +57,6 @@ var (
 	InvalidParamErr = &BizErr{Code: CodeInvalidParam, Msg: "Invalid params"}
 
 	// User module
-	UserNotFound = &BizErr{Code: CodeUserNotFoune, Msg: "The User not found"}
+	UserNotFound      = &BizErr{Code: CodeUserNotFoune, Msg: "The User not found"}
+	UserAlreadyExists = &BizErr{Code: CodeUserAleadyExists, Msg: "The user already exists."}
 )
