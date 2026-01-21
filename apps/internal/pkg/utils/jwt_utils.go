@@ -47,7 +47,7 @@ func PasrseJwt(tokenString string) (CustomClaims, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &claims, func(t *jwt.Token) (any, error) {
 		// 类型断言
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, errmsg.New(errmsg.CodeInternal, "签名算法不一致", nil)
+			return nil, errmsg.New(errmsg.CodeInternalErr, "签名算法不一致", nil)
 		}
 		return []byte("tentcoo@123"), nil
 	})

@@ -41,13 +41,13 @@ func (svc *UserService) Create(ctx context.Context, req request.CreateUserReques
 	// 2.生成 uuid
 	uuid, err := uuid.NewV7()
 	if err != nil {
-		return "", errmsg.New(errmsg.CodeInternal, "创建 uuid 错误", err)
+		return "", errmsg.New(errmsg.CodeInternalErr, "创建 uuid 错误", err)
 	}
 
 	// 3.加密密码
 	password, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	if err != nil {
-		return "", errmsg.New(errmsg.CodeInternal, "加密密码错误", err)
+		return "", errmsg.New(errmsg.CodeInternalErr, "加密密码错误", err)
 	}
 	// 4.构建 User 对象
 	user := model.User{

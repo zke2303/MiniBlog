@@ -34,7 +34,7 @@ func New(code int, msg string, cause error) error {
 // NewInternalErr 快速创建一个带消息的内部服务错误
 func NewInternalErr(msg string, cause error) error {
 	return &BizErr{
-		Code:  CodeInternal,
+		Code:  CodeInternalErr,
 		Msg:   msg,
 		Cause: cause,
 	}
@@ -42,8 +42,10 @@ func NewInternalErr(msg string, cause error) error {
 
 // 定义错误码
 const (
-	CodeInternal     = 10000
-	CodeInvalidParam = 10001
+	CodeInternalErr      = 10000
+	CodeInvalidParam     = 10001
+	CodeUUIDGeneratorErr = 10002
+	CodeNotLogin         = 10003
 
 	CodeUserNotFoune     = 20001
 	CodePasswordError    = 20002
@@ -53,10 +55,11 @@ const (
 // 定义错误
 var (
 	// General error
-	InternalErr     = &BizErr{Code: CodeInternal, Msg: "Unknow error"}
-	InvalidParamErr = &BizErr{Code: CodeInvalidParam, Msg: "Invalid params"}
-
+	InternalErr      = &BizErr{Code: CodeInternalErr, Msg: "未知错误"}
+	InvalidParamErr  = &BizErr{Code: CodeInvalidParam, Msg: "无效参数"}
+	UUIDGeneratorErr = &BizErr{Code: CodeUUIDGeneratorErr, Msg: "内部服务错误"}
+	UserNotLogin     = &BizErr{Code: CodeNotLogin, Msg: "当前用户未登入"}
 	// User module
-	UserNotFound      = &BizErr{Code: CodeUserNotFoune, Msg: "The User not found"}
-	UserAlreadyExists = &BizErr{Code: CodeUserAleadyExists, Msg: "The user already exists."}
+	UserNotFound      = &BizErr{Code: CodeUserNotFoune, Msg: "用户不存在"}
+	UserAlreadyExists = &BizErr{Code: CodeUserAleadyExists, Msg: "用户名已被注册"}
 )

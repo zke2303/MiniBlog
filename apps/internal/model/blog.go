@@ -11,11 +11,11 @@ import (
 type Blog struct {
 	ID       uuid.UUID `json:"id"`
 	Title    string    `json:"title"`
-	Author   string    `json:"author"`
+	AuthorID uuid.UUID `json:"author_id"`
 	Content  string    `json:"content"`
-	CreateAt time.Time `json:"create_time" gorm:"create_time"`
-	UpdateAt time.Time `json:"update_time" gorm:"update_time"`
-	DeleteAt time.Time `json:"delete_time" gorm:"delete_time"`
+	CreateAt time.Time `json:"create_time" gorm:"column:create_time"`
+	UpdateAt time.Time `json:"update_time" gorm:"column:update_time"`
+	DeleteAt time.Time `json:"delete_time" gorm:"column:delete_time"`
 }
 
 // TableName 设置表名

@@ -37,15 +37,16 @@ func main() {
 	}
 	// 3.创建 repository 实例对象
 	userRepo := repository.NewUserRepository()
-
+	blogRepo := repository.NewBlogRepository()
 	// 4.创建 service 实例对象
 	userService := service.NewUserService(db, userRepo)
-
+	blogService := service.NewBlogService(blogRepo, db)
 	// 5.创建 controller 实例对象
 	userController := controller.NewUserController(userService)
 	authController := controller.NewAuthController(userService)
+	blogController := controller.NewBlogController(blogService)
 	// 6.配置路由
-	r := setupRouter(*userController, *authController)
+	r := setupRouter(userController, authController, blogController)
 
 	// 7.设置 gin 启动模式
 	gin.SetMode(cfg.Serve.Mode)
@@ -57,8 +58,9 @@ func main() {
 
 // setupRouter 设置路由
 func setupRouter(
-	userController controller.UserController,
-	authController controller.AuthController,
+	userController *controller.UserController,
+	authController *controller.AuthController,
+	blogController *controller.BlogController,
 ) *gin.Engine {
 	// 1.创建 gin 示例对象
 	r := gin.Default()
@@ -80,6 +82,11 @@ func setupRouter(
 			users := protected.Group("/users")
 			{
 				users.GET("/profile", userController.Profile)
+			}
+
+			blogs := protected.Group("/blogs")
+			{
+				blogs.POST("/", blogController.Create)
 			}
 		}
 	}
