@@ -31,10 +31,14 @@ func GeneratorJwt(userID string, username string) (string, error) {
 	}
 
 	// 进行base加密
-	token := jwt.NewWithClaims(jwt.SigningMethodES256, claims)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	// 进行签名加密
-	return token.SignedString([]byte("tentcoo@123"))
+	tokenString, err := token.SignedString([]byte("tentcoo@123"))
+	if err != nil {
+		return "", errmsg.InternalErr.Wrap(err)
+	}
+	return tokenString, nil
 }
 
 // PasrseJwt 解析token

@@ -36,7 +36,8 @@ const (
 	CodeInternal     = 10000
 	CodeInvalidParam = 10001
 
-	CodeUserNotFoune = 20001
+	CodeUserNotFoune  = 20001
+	CodePasswordError = 20002
 )
 
 // 定义错误

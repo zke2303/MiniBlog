@@ -43,9 +43,9 @@ func main() {
 
 	// 5.创建 controller 实例对象
 	userController := controller.NewUserController(userService)
-
+	authController := controller.NewAuthController(userService)
 	// 6.配置路由
-	r := setupRouter(*userController)
+	r := setupRouter(*userController, *authController)
 
 	// 7.设置 gin 启动模式
 	gin.SetMode(cfg.Serve.Mode)
@@ -58,6 +58,7 @@ func main() {
 // setupRouter 设置路由
 func setupRouter(
 	userController controller.UserController,
+	authController controller.AuthController,
 ) *gin.Engine {
 	// 1.创建 gin 示例对象
 	r := gin.Default()
@@ -66,17 +67,17 @@ func setupRouter(
 	v1 := r.Group("/api/v1", middleware.ErrorHandlerMiddleware(common.GlobalTrans))
 	// 3.分组路由
 	{
-		public := v1.Group("/public")
+		// 认证模块
+		auth := v1.Group("")
 		{
-			users := public.Group("/users")
-			{
-				users.POST("", userController.Create)
-			}
+			auth.POST("/register", authController.Register)
+			auth.POST("/login", authController.Login)
 		}
 
-		auth := v1.Group("/auth", middleware.AuthMiddleware())
+		// 需要登入
+		protected := v1.Group("", middleware.AuthMiddleware())
 		{
-			users := auth.Group("/users")
+			users := protected.Group("/users")
 			{
 				users.GET("/profile", userController.Profile)
 			}

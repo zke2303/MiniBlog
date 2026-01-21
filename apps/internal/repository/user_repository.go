@@ -3,7 +3,9 @@ package repository
 
 import (
 	"context"
+	"errors"
 
+	"mini-blog/internal/dto/errmsg"
 	"mini-blog/internal/model"
 
 	"gorm.io/gorm"
@@ -13,6 +15,7 @@ import (
 type IUserRepository interface {
 	Create(ctx context.Context, db *gorm.DB, user model.User) error
 	GetByID(ctx context.Context, db *gorm.DB, userID string) (model.User, error)
+	GetByUsername(ctx context.Context, db *gorm.DB, username string) (model.User, error)
 }
 
 // UserRepository UserRepository 实例化对象
@@ -41,5 +44,18 @@ func (repo *UserRepository) GetByID(ctx context.Context, db *gorm.DB, userID str
 		return model.User{}, result.Error
 	}
 
+	return user, nil
+}
+
+// GetByUsername 根据 Username 查询用户
+func (repo *UserRepository) GetByUsername(ctx context.Context, db *gorm.DB, username string) (model.User, error) {
+	var user model.User
+	res := db.WithContext(ctx).Where("username = ?", username).First(&user)
+	if res.Error != nil {
+		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
+			return model.User{}, errmsg.UserNotFound
+		}
+		return model.User{}, errmsg.InternalErr.Wrap(res.Error)
+	}
 	return user, nil
 }

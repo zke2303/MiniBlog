@@ -8,6 +8,7 @@ import (
 	"mini-blog/internal/dto/errmsg"
 	"mini-blog/internal/dto/request"
 	"mini-blog/internal/model"
+	"mini-blog/internal/pkg/utils"
 	"mini-blog/internal/repository"
 
 	"github.com/google/uuid"
@@ -81,4 +82,27 @@ func (svc *UserService) GetByID(ctx context.Context, userID string) (model.User,
 
 	// 3.执行成功,返回查询结构
 	return user, nil
+}
+
+// Login 用户登入
+func (svc *UserService) Login(ctx context.Context, req request.UserLoginRequest) (string, error) {
+	// 1.根据 username 查询用户
+	user, err := svc.repo.GetByUsername(ctx, svc.db, req.Username)
+	if err != nil {
+		return "", err
+	}
+
+	// 2.进行密码校验
+	if err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password)); err != nil {
+		return "", errmsg.New(errmsg.CodePasswordError, "密码错误", err)
+	}
+
+	// 3.密码校验成功, 生成 jwt 令牌
+	token, err := utils.GeneratorJwt(user.ID.String(), user.Username)
+	if err != nil {
+		return "", err
+	}
+
+	// 4.返回 token 给前端
+	return token, nil
 }

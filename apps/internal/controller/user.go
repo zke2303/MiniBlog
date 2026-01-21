@@ -49,8 +49,7 @@ func (h *UserController) Create(c *gin.Context) {
 func (h *UserController) Profile(c *gin.Context) {
 	// 1.获取当前登入的用户id
 	// TODO: userID 应该从 context 中获取
-	// userId := c.GetString("userID")
-	userID := "019bd98d-b26a-700c-bfa1-054da20048e8"
+	userID := c.GetString("userID")
 	// 2.调用 service 层
 	user, err := h.svc.GetByID(c.Request.Context(), userID)
 	if err != nil {
