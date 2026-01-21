@@ -13,6 +13,7 @@ import (
 	"mini-blog/internal/service"
 
 	"github.com/gin-gonic/gin"
+	"github.com/redis/go-redis/v9"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -35,6 +36,11 @@ func main() {
 	if err != nil {
 		log.Fatal("数据库连接错误: %w", err)
 	}
+
+	rdb := redis.NewClient(&redis.Options{
+		Addr: cfg.Datasource.Redis.Addr,
+		DB:   cfg.Datasource.Redis.DB,
+	})
 	// 3.创建 repository 实例对象
 	userRepo := repository.NewUserRepository()
 	blogRepo := repository.NewBlogRepository()

@@ -6,6 +6,7 @@ import (
 	"mini-blog/internal/dto/errmsg"
 	"mini-blog/internal/model"
 
+	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 )
 
@@ -15,11 +16,15 @@ type IBlogRepository interface {
 }
 
 // BlogRepository BlogReposioty的实现
-type BlogRepository struct{}
+type BlogRepository struct {
+	rdb *redis.Client
+}
 
 // NewBlogRepository 创建 BlogRepository 实例对象
-func NewBlogRepository() IBlogRepository {
-	return &BlogRepository{}
+func NewBlogRepository(rdb *redis.Client) IBlogRepository {
+	return &BlogRepository{
+		rdb: rdb,
+	}
 }
 
 // Create 创建一篇 Blog
@@ -28,6 +33,5 @@ func (repo *BlogRepository) Create(ctx context.Context, db *gorm.DB, blog model.
 	if res.Error != nil {
 		return errmsg.InternalErr.Wrap(res.Error)
 	}
-
 	return nil
 }

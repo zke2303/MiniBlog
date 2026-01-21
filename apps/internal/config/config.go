@@ -22,11 +22,18 @@ type Serve struct {
 // Datasource 数据源配置
 type Datasource struct {
 	Postgres Postgres `mapstructure:"postgres" json:"postgres"`
+	Redis    Redis    `mapstructure:"redis" json:"redis"`
 }
 
 // Postgres Postgres数据库配置
 type Postgres struct {
 	Dsn string `mapstructure:"dsn" json:"dsn"`
+}
+
+// Redis Redis 配置
+type Redis struct {
+	Addr string `mapstructure:"addr" json:"addr"`
+	DB   int    `mapstructure:"db" json:"db"`
 }
 
 // ConfigurationInit 初始化Configuration对象
