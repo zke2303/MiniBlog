@@ -36,7 +36,7 @@ func GeneratorJwt(userID string, username string) (string, error) {
 	// 进行签名加密
 	tokenString, err := token.SignedString([]byte("tentcoo@123"))
 	if err != nil {
-		return "", errmsg.InternalErr.Wrap(err)
+		return "", errmsg.NewInternalErr("token加密失败", err)
 	}
 	return tokenString, nil
 }

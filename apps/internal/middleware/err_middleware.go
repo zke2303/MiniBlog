@@ -3,6 +3,7 @@ package middleware
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"mini-blog/internal/dto/errmsg"
 	"mini-blog/internal/dto/response"
@@ -51,6 +52,7 @@ func ErrorHandlerMiddleware(trans ut.Translator) gin.HandlerFunc {
 
 		// 3) 业务错误
 		if bizErr, ok := err.(*errmsg.BizErr); ok {
+			fmt.Printf("cause error: %v", bizErr.Cause)
 			response.BizErrFail(c, *bizErr)
 			return
 		}

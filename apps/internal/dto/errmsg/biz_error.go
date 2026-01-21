@@ -31,6 +31,15 @@ func New(code int, msg string, cause error) error {
 	}
 }
 
+// NewInternalErr 快速创建一个带消息的内部服务错误
+func NewInternalErr(msg string, cause error) error {
+	return &BizErr{
+		Code:  CodeInternal,
+		Msg:   msg,
+		Cause: cause,
+	}
+}
+
 // 定义错误码
 const (
 	CodeInternal     = 10000
