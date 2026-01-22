@@ -67,6 +67,15 @@ func (svc *BlogService) Create(ctx context.Context, userID string, req request.C
 }
 
 func (svc *BlogService) ListBlogs(ctx context.Context, req request.BlogsPageQuery) ([]model.Blog, error) {
-	// 1.调用 repository 层
-	return svc.repo.ListBlogs(ctx, svc.db, req)
+	// 1.防止非法参数
+	offset := 0
+	limit := 10
+	if req.Size < 100 && req.Size > 0 {
+		limit = req.Size
+	}
+	if req.Page > 1 {
+		offset = (req.Page - 1) * limit
+	}
+
+	return svc.repo.ListBlogs(ctx, svc.db, offset, limit, req)
 }

@@ -75,11 +75,16 @@ func setupRouter(
 	v1 := r.Group("/api/v1", middleware.ErrorHandlerMiddleware(common.GlobalTrans))
 	// 3.分组路由
 	{
-		// 认证模块
+		// 免登入
 		auth := v1.Group("")
 		{
 			auth.POST("/register", authController.Register)
 			auth.POST("/login", authController.Login)
+
+			blogs := v1.Group("/blogs")
+			{
+				blogs.GET("/", blogController.ListBlogs)
+			}
 		}
 
 		// 需要登入
@@ -93,7 +98,6 @@ func setupRouter(
 			blogs := protected.Group("/blogs")
 			{
 				blogs.POST("/", blogController.Create)
-				blogs.GET("/", blogController.ListBlogs)
 			}
 		}
 	}

@@ -58,7 +58,7 @@ func (h *BlogController) Create(c *gin.Context) {
 func (h *BlogController) ListBlogs(c *gin.Context) {
 	// 1.绑定并校验请求体参数
 	var req request.BlogsPageQuery
-	if err := c.ShouldBindJSON(&req); err != nil {
+	if err := c.ShouldBindQuery(&req); err != nil {
 		c.Error(err)
 		return
 	}

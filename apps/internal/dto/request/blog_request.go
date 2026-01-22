@@ -9,6 +9,6 @@ type CreateBlogRequest struct {
 // BlogsPageQuery Blogs的分页查询请求体
 type BlogsPageQuery struct {
 	PageQuery
-	Title    *string `json:"title" binding:"title"`
-	AuthorID string  `json:"authorID" binding:"authorID"`
+	Title    string `json:"title" form:"title"`
+	AuthorID string `json:"authorID" binding:"omitempty,uuid" form:"title"`
 }
