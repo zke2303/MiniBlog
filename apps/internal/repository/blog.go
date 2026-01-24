@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"errors"
 
 	"mini-blog/internal/dto/errmsg"
 	"mini-blog/internal/dto/request"
@@ -15,6 +16,7 @@ import (
 type IBlogRepository interface {
 	Create(ctx context.Context, db *gorm.DB, blog model.Blog) error
 	ListBlogs(ctx context.Context, db *gorm.DB, offset, limit int, req request.BlogsPageQuery) ([]model.Blog, error)
+	GetBlogDetail(ctx context.Context, db *gorm.DB, id string) (model.Blog, error)
 }
 
 // BlogRepository BlogReposioty的实现
@@ -63,4 +65,16 @@ func (repo *BlogRepository) ListBlogs(ctx context.Context, db *gorm.DB, offset, 
 	}
 
 	return blogs, nil
+}
+
+func (repo *BlogRepository) GetBlogDetail(ctx context.Context, db *gorm.DB, id string) (model.Blog, error) {
+	var blog model.Blog
+	if err := db.WithContext(ctx).Where("id = ?", id).First(&blog).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return model.Blog{}, errmsg.BlogNotFound
+		}
+		return model.Blog{}, errmsg.InternalErr.Wrap(err)
+	}
+
+	return blog, nil
 }

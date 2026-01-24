@@ -72,3 +72,27 @@ func (h *BlogController) ListBlogs(c *gin.Context) {
 	// 3.返回查询结果
 	response.Success(c, blogs)
 }
+
+// GetBlogDetail 获取 Blog 的详细
+// @Summary 获取 Blog 详细
+// @Tags blog
+// @Accept json
+// @Produce json
+// @Param id path string true 'blogID'
+// @Router /blogs/:id [get]
+func (h *BlogController) GetBlogDetail(c *gin.Context) {
+	var req request.IDRequest
+	if err := c.ShouldBindUri(&req); err != nil {
+		c.Error(err)
+		return
+	}
+
+	// 调用 service 层
+	blog, err := h.svc.GetBlogDetail(c.Request.Context(), req.ID)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+
+	response.Success(c, blog)
+}

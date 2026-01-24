@@ -79,3 +79,7 @@ func (svc *BlogService) ListBlogs(ctx context.Context, req request.BlogsPageQuer
 
 	return svc.repo.ListBlogs(ctx, svc.db, offset, limit, req)
 }
+
+func (svc *BlogService) GetBlogDetail(ctx context.Context, id string) (model.Blog, error) {
+	return svc.repo.GetBlogDetail(ctx, svc.db, id)
+}

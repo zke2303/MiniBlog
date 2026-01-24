@@ -84,6 +84,7 @@ func setupRouter(
 			blogs := v1.Group("/blogs")
 			{
 				blogs.GET("/", blogController.ListBlogs)
+				blogs.GET("/:id", blogController.GetBlogDetail)
 			}
 		}
 

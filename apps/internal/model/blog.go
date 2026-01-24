@@ -16,7 +16,7 @@ type Blog struct {
 	Content   string         `json:"content"`
 	CreatedAt time.Time      `json:"create_time" gorm:"column:create_time"`
 	UpdatedAt time.Time      `json:"update_time" gorm:"column:update_time"`
-	DeleteAt  gorm.DeletedAt `json:"delete_time" gorm:"column:delete_time"`
+	DeleteAt  gorm.DeletedAt `json:"-" gorm:"column:delete_time"`
 }
 
 // TableName 设置表名

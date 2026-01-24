@@ -50,6 +50,8 @@ const (
 	CodeUserNotFoune     = 20001
 	CodePasswordError    = 20002
 	CodeUserAleadyExists = 20003
+
+	CodeBlogNotFound = 30001
 )
 
 // 定义错误
@@ -62,4 +64,7 @@ var (
 	// User module
 	UserNotFound      = &BizErr{Code: CodeUserNotFoune, Msg: "用户不存在"}
 	UserAlreadyExists = &BizErr{Code: CodeUserAleadyExists, Msg: "用户名已被注册"}
+
+	// Blog module
+	BlogNotFound = &BizErr{Code: CodeBlogNotFound, Msg: "博文不存在"}
 )
