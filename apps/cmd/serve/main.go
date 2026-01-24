@@ -11,6 +11,7 @@ import (
 	"mini-blog/internal/controller"
 	"mini-blog/internal/middleware"
 	"mini-blog/internal/pkg/common"
+	"mini-blog/internal/pkg/utils"
 	"mini-blog/internal/repository"
 	"mini-blog/internal/service"
 
@@ -54,18 +55,20 @@ func main() {
 		Addr: cfg.Datasource.Redis.Addr,
 		DB:   cfg.Datasource.Redis.DB,
 	})
+
+	jwtHandler := utils.NewJwtHandler(cfg.JwtConfig.Secret, time.Duration(cfg.JwtConfig.Expired)*time.Hour, cfg.JwtConfig.Iss)
 	// 3.创建 repository 实例对象
 	userRepo := repository.NewUserRepository()
 	blogRepo := repository.NewBlogRepository(rdb)
 	// 4.创建 service 实例对象
-	userService := service.NewUserService(db, userRepo)
+	userService := service.NewUserService(db, userRepo, jwtHandler)
 	blogService := service.NewBlogService(blogRepo, db)
 	// 5.创建 controller 实例对象
 	userController := controller.NewUserController(userService)
 	authController := controller.NewAuthController(userService)
 	blogController := controller.NewBlogController(blogService)
 	// 6.配置路由
-	r := setupRouter(userController, authController, blogController)
+	r := setupRouter(userController, authController, blogController, jwtHandler)
 
 	// 7.设置 gin 启动模式
 	gin.SetMode(cfg.Serve.Mode)
@@ -80,6 +83,7 @@ func setupRouter(
 	userController *controller.UserController,
 	authController *controller.AuthController,
 	blogController *controller.BlogController,
+	jwtHandler *utils.JwtHandler,
 ) *gin.Engine {
 	// 1.创建 gin 示例对象
 	r := gin.Default()
@@ -102,7 +106,7 @@ func setupRouter(
 		}
 
 		// 需要登入
-		protected := v1.Group("", middleware.AuthMiddleware())
+		protected := v1.Group("", middleware.AuthMiddleware(jwtHandler))
 		{
 			users := protected.Group("/users")
 			{

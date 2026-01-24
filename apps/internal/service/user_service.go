@@ -18,15 +18,20 @@ import (
 
 // UserService 用户业务逻辑对象
 type UserService struct {
-	db   *gorm.DB
-	repo repository.IUserRepository
+	db         *gorm.DB
+	repo       repository.IUserRepository
+	jwtHandler *utils.JwtHandler
 }
 
 // NewUserService 创建 UserService 实例对象
-func NewUserService(db *gorm.DB, repo repository.IUserRepository) *UserService {
+func NewUserService(db *gorm.DB,
+	repo repository.IUserRepository,
+	jwtHandler *utils.JwtHandler,
+) *UserService {
 	return &UserService{
-		db:   db,
-		repo: repo,
+		db:         db,
+		repo:       repo,
+		jwtHandler: jwtHandler,
 	}
 }
 
@@ -104,7 +109,7 @@ func (svc *UserService) Login(ctx context.Context, req request.UserLoginRequest)
 	}
 
 	// 3.密码校验成功, 生成 jwt 令牌
-	token, err := utils.GeneratorJwt(user.ID.String(), user.Username)
+	token, err := svc.jwtHandler.GeneratorJwt(user.ID.String(), user.Username)
 	if err != nil {
 		return "", err
 	}

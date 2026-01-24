@@ -8,3 +8,7 @@ datasource:
   redis:
     addr: 47.110.74.7:6379
     db: 0
+jwt:
+  secret: tentcoo@123
+  iss: github.con/nanfeng/mini-blog
+  expired: 1000

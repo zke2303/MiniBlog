@@ -11,12 +11,20 @@ import (
 type Configuration struct {
 	Serve      Serve      `mapstructure:"serve" json:"serve"`
 	Datasource Datasource `mapstructure:"datasource" json:"datasource"`
+	JwtConfig  JwtConfig  `mapstructure:"jwt" json:"jwt"`
 }
 
 // Serve Gin服务配置
 type Serve struct {
 	Port int    `mapstructure:"port" json:"port" xml:"port"`
 	Mode string `mapstructure:"mode" json:"mode" xml:"mode"`
+}
+
+// JwtConfig Jwt的参数配置
+type JwtConfig struct {
+	Secret  string `mapstructure:"secret" json:"secret" xml:"secret"`
+	Iss     string `mapstructure:"iss" json:"iss" xml:"iss"`
+	Expired int    `mapstructure:"expired" json:"expired" xml:"expired"`
 }
 
 // Datasource 数据源配置

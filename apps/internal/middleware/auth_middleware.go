@@ -11,7 +11,9 @@ import (
 )
 
 // AuthMiddleware 鉴权中间件
-func AuthMiddleware() gin.HandlerFunc {
+func AuthMiddleware(
+	jwtHandler *utils.JwtHandler,
+) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// 1.从请求中获取 token
 		header := c.Request.Header.Get("Authorization")
@@ -32,7 +34,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		}
 
 		// 4.解析 token
-		claims, err := utils.PasrseJwt(parts[1])
+		claims, err := jwtHandler.ParseJwt(parts[1])
 		if err != nil {
 			_ = c.Error(errmsg.New(http.StatusUnauthorized, "token解析失败", err))
 			c.Abort()
