@@ -3,7 +3,7 @@
     <el-header height="60px" class="app-header">
       <div class="header-content">
         <!-- Brand -->
-        <div class="brand">
+        <div class="brand" @click="$router.push('/')">
           <span class="logo">MiniBlog</span>
         </div>
 

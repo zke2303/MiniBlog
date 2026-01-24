@@ -8,6 +8,7 @@ import HomeView from '../views/HomeView.vue'
 import Login from '../views/LoginView.vue'
 import Register from '../views/RegisterView.vue'
 import CreateBlog from '../views/CreateBlogView.vue'
+import BlogDetail from '../views/BlogDetailView.vue'
 
 const routes = [
   {
@@ -29,6 +30,11 @@ const routes = [
     path: '/create-blog',
     name: 'CreateBlog',
     component: CreateBlog
+  },
+  {
+    path: '/blog/:id',
+    name: 'BlogDetail',
+    component: BlogDetail
   },
   {
     path: '*',

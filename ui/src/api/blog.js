@@ -7,3 +7,25 @@ export function createBlog(data) {
     data
   })
 }
+
+export function listBlogs(params) {
+  return request({
+    url: '/blogs',
+    method: 'get',
+    params
+  })
+}
+
+export function getBlogDetail(id) {
+  return request({
+    url: `/blogs/${id}`,
+    method: 'get'
+  })
+}
+
+export function deleteBlog(id) {
+  return request({
+    url: `/blogs/${id}`,
+    method: 'delete'
+  })
+}

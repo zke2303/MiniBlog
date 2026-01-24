@@ -1,22 +1,42 @@
 <template>
   <div class="login-container">
-    <el-card class="box-card">
-      <div slot="header" class="clearfix">
-        <span>Login</span>
+    <div class="login-box">
+      <div class="login-header">
+        <h1 class="brand-logo">MiniBlog</h1>
+        <p class="brand-slogan">记录生活，分享快乐</p>
       </div>
-      <el-form ref="loginForm" :model="loginForm" :rules="loginRules" label-width="80px">
-        <el-form-item label="Username" prop="username">
-          <el-input v-model="loginForm.username" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="Password" prop="password">
-          <el-input type="password" v-model="loginForm.password" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="handleLogin">Login</el-button>
-          <el-button @click="$router.push('/register')">Register</el-button>
-        </el-form-item>
-      </el-form>
-    </el-card>
+      
+      <el-card class="login-card" shadow="always">
+        <h2 class="form-title">欢迎回来</h2>
+        <el-form ref="loginForm" :model="loginForm" :rules="loginRules">
+          <el-form-item prop="username">
+            <el-input 
+              v-model="loginForm.username" 
+              prefix-icon="el-icon-user" 
+              placeholder="用户名"
+              autocomplete="off"
+            ></el-input>
+          </el-form-item>
+          <el-form-item prop="password">
+            <el-input 
+              type="password" 
+              v-model="loginForm.password" 
+              prefix-icon="el-icon-lock" 
+              placeholder="密码"
+              autocomplete="off"
+              @keyup.enter.native="handleLogin"
+            ></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" :loading="loading" class="login-submit" @click="handleLogin">登录</el-button>
+          </el-form-item>
+          <div class="form-footer">
+            <span>还没有账号? </span>
+            <el-link type="primary" :underline="false" @click="$router.push('/register')">立即注册</el-link>
+          </div>
+        </el-form>
+      </el-card>
+    </div>
   </div>
 </template>
 
@@ -28,13 +48,14 @@ export default {
   name: 'LoginView',
   data() {
     return {
+      loading: false,
       loginForm: {
         username: '',
         password: ''
       },
       loginRules: {
-        username: [{ required: true, message: 'Please input username', trigger: 'blur' }],
-        password: [{ required: true, message: 'Please input password', trigger: 'blur' }]
+        username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
+        password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
       }
     }
   },
@@ -42,13 +63,16 @@ export default {
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
+          this.loading = true
           login(this.loginForm).then(token => {
             setToken(token)
-            this.$message.success('Login successful')
+            this.$message.success('登录成功')
             this.$router.push('/')
-          }).catch(() => {})
-        } else {
-          return false
+          }).catch(() => {
+            // Error handled by interceptor
+          }).finally(() => {
+            this.loading = false
+          })
         }
       })
     }
@@ -61,10 +85,58 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  background-color: #f0f2f5;
+  min-height: 100vh;
+  background-color: #f5f7fa;
+  background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
 }
-.box-card {
-  width: 400px;
+
+.login-box {
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.brand-logo {
+  font-size: 42px;
+  color: #409EFF;
+  margin: 0;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+.brand-slogan {
+  color: #909399;
+  margin-top: 8px;
+  font-size: 16px;
+}
+
+.login-card {
+  border-radius: 12px;
+  border: none;
+}
+
+.form-title {
+  text-align: center;
+  margin-bottom: 24px;
+  color: #303133;
+  font-weight: 500;
+}
+
+.login-submit {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+}
+
+.form-footer {
+  text-align: center;
+  font-size: 14px;
+  color: #606266;
+  margin-top: 16px;
 }
 </style>
