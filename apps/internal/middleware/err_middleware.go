@@ -52,7 +52,7 @@ func ErrorHandlerMiddleware(trans ut.Translator) gin.HandlerFunc {
 
 		// 3) 业务错误
 		if bizErr, ok := err.(*errmsg.BizErr); ok {
-			fmt.Printf("cause error: %v", bizErr.Cause)
+			fmt.Printf("cause error: %v\n", bizErr.Cause)
 			response.BizErrFail(c, *bizErr)
 			return
 		}

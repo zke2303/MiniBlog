@@ -34,7 +34,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		// 4.解析 token
 		claims, err := utils.PasrseJwt(parts[1])
 		if err != nil {
-			_ = c.Error(errmsg.New(http.StatusUnauthorized, "token解析失败", nil))
+			_ = c.Error(errmsg.New(http.StatusUnauthorized, "token解析失败", err))
 			c.Abort()
 			return
 		}

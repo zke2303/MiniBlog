@@ -112,6 +112,7 @@ func setupRouter(
 			blogs := protected.Group("/blogs")
 			{
 				blogs.POST("/", blogController.Create)
+				blogs.DELETE("/:id", blogController.Delete)
 			}
 		}
 	}

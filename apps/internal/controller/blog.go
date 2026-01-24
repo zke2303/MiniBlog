@@ -96,3 +96,34 @@ func (h *BlogController) GetBlogDetail(c *gin.Context) {
 
 	response.Success(c, blog)
 }
+
+// Delete 删除Blog
+// @Summary 删除Blog
+// @Tags blog
+// @Accept json
+// @Produce json
+// @Param id path string ture "Blog的主键id"
+// @Route /blogs/:id [delete]
+func (h *BlogController) Delete(c *gin.Context) {
+	// 1.获取当前登入用户id
+	userID := c.GetString("userID")
+	if userID == "" {
+		c.Error(errmsg.UserNotLogin)
+		return
+	}
+	// 2.校验参数,并绑定
+	var req request.IDRequest
+	if err := c.ShouldBindUri(&req); err != nil {
+		c.Error(err)
+		return
+	}
+
+	// 3.调用 service 层,执行相关业务逻辑
+	if err := h.svc.Delete(c.Request.Context(), userID, req.ID); err != nil {
+		c.Error(err)
+		return
+	}
+
+	// 4.返回删除成功信息
+	response.Success(c, nil)
+}

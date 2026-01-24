@@ -47,6 +47,7 @@ const (
 	CodeUUIDGeneratorErr = 10002
 	CodeNotLogin         = 10003
 	CodeUnmarshalErr     = 10004
+	CodeNotContent       = 10005
 
 	CodeUserNotFoune     = 20001
 	CodePasswordError    = 20002
@@ -63,6 +64,8 @@ var (
 	UUIDGeneratorErr = &BizErr{Code: CodeUUIDGeneratorErr, Msg: "内部服务错误"}
 	UserNotLogin     = &BizErr{Code: CodeNotLogin, Msg: "当前用户未登入"}
 	UnmarshalErr     = &BizErr{Code: CodeUnmarshalErr, Msg: "反序列化错误"}
+	NotContentErr    = &BizErr{Code: CodeNotContent, Msg: "资源不存在"}
+
 	// User module
 	UserNotFound      = &BizErr{Code: CodeUserNotFoune, Msg: "用户不存在"}
 	UserAlreadyExists = &BizErr{Code: CodeUserAleadyExists, Msg: "用户名已被注册"}

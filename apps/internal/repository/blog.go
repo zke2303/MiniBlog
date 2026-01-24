@@ -20,6 +20,7 @@ type IBlogRepository interface {
 	Create(ctx context.Context, db *gorm.DB, blog model.Blog) error
 	ListBlogs(ctx context.Context, db *gorm.DB, offset, limit int, req request.BlogsPageQuery) ([]model.Blog, error)
 	GetBlogDetail(ctx context.Context, db *gorm.DB, id string) (model.Blog, error)
+	Delete(ctx context.Context, db *gorm.DB, userID, blogID string) error
 }
 
 // BlogRepository BlogReposioty的实现
@@ -97,4 +98,22 @@ func (repo *BlogRepository) GetBlogDetail(ctx context.Context, db *gorm.DB, id s
 	// 忽略错误, 因为即使redis缓存失败,也不应该发送错误
 	_ = repo.rdb.Set(ctx, key, data, time.Minute*30).Err()
 	return blog, nil
+}
+
+// Delete 根据userID和blogID删除Blog
+func (repo *BlogRepository) Delete(ctx context.Context, db *gorm.DB, userID, blogID string) error {
+	res := db.WithContext(ctx).Where("author_id = ? and id = ?", userID, blogID).Delete(&model.Blog{})
+	if res.Error != nil {
+		return errmsg.InternalErr.Wrap(res.Error)
+	}
+
+	if res.RowsAffected == 0 {
+		return errmsg.NotContentErr
+	}
+
+	// 删除 mysql 后,再执行删除缓存,保证数据的弱一致性
+	key := fmt.Sprintf("blogs:%s", blogID)
+	repo.rdb.Del(ctx, key)
+
+	return nil
 }

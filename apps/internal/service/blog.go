@@ -85,3 +85,19 @@ func (svc *BlogService) ListBlogs(ctx context.Context, req request.BlogsPageQuer
 func (svc *BlogService) GetBlogDetail(ctx context.Context, id string) (model.Blog, error) {
 	return svc.repo.GetBlogDetail(ctx, svc.db, id)
 }
+
+// Delete 根据BlogID删除Blog
+func (svc *BlogService) Delete(ctx context.Context, userID string, id string) error {
+	// 任何执行 数据库 更新操作, 都要进行事务管理, 即使只有一条sql语句
+	err := svc.db.Transaction(func(tx *gorm.DB) error {
+		if err := svc.repo.Delete(ctx, svc.db, userID, id); err != nil {
+			return err
+		}
+		return nil
+	})
+	if err != nil {
+		return errmsg.InternalErr.Wrap(err)
+	}
+
+	return nil
+}
