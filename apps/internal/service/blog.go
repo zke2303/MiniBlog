@@ -96,7 +96,7 @@ func (svc *BlogService) Delete(ctx context.Context, userID string, id string) er
 		return nil
 	})
 	if err != nil {
-		return errmsg.InternalErr.Wrap(err)
+		return err
 	}
 
 	return nil
