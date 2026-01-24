@@ -5,6 +5,7 @@ import (
 	"context"
 	"errors"
 
+	"mini-blog/internal/dto/request"
 	"mini-blog/internal/model"
 	"mini-blog/internal/pkg/errmsg"
 
@@ -16,6 +17,7 @@ type IUserRepository interface {
 	Create(ctx context.Context, db *gorm.DB, user model.User) error
 	GetByID(ctx context.Context, db *gorm.DB, userID string) (model.User, error)
 	GetByUsername(ctx context.Context, db *gorm.DB, username string) (model.User, error)
+	Update(ctx context.Context, db *gorm.DB, userID string, req request.UpdateUserRequest) error
 }
 
 // UserRepository UserRepository 实例化对象
@@ -58,4 +60,15 @@ func (repo *UserRepository) GetByUsername(ctx context.Context, db *gorm.DB, user
 		return model.User{}, errmsg.InternalErr.Wrap(res.Error)
 	}
 	return user, nil
+}
+
+// Update 更新用户信息
+func (repo *UserRepository) Update(ctx context.Context, db *gorm.DB, userID string, req request.UpdateUserRequest) error {
+	res := db.WithContext(ctx).Where("id = ?", userID).Updates(&req)
+
+	if res.Error != nil {
+		return res.Error
+	}
+
+	return nil
 }

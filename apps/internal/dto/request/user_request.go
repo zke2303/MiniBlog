@@ -6,3 +6,8 @@ type CreateUserRequest struct {
 	Username string `json:"username" binding:"required,min=1,max=20,alphanum"`
 	Password string `json:"password" binding:"required,min=6,max=18"`
 }
+
+// UpdateUserRequest 更新用户信息请求体
+type UpdateUserRequest struct {
+	Password *string `json:"password" binding:"omitempty,min=6,max=18"`
+}

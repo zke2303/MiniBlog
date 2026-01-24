@@ -107,6 +107,7 @@ func setupRouter(
 			users := protected.Group("/users")
 			{
 				users.GET("/profile", userController.Profile)
+				users.PUT("/update", userController.Update)
 			}
 
 			blogs := protected.Group("/blogs")

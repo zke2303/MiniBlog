@@ -112,3 +112,28 @@ func (svc *UserService) Login(ctx context.Context, req request.UserLoginRequest)
 	// 4.返回 token 给前端
 	return token, nil
 }
+
+// Update 更新用户信息
+func (svc *UserService) Update(ctx context.Context, userID string, req request.UpdateUserRequest) error {
+	// 密码加密
+	if req.Password != nil {
+		password, err := bcrypt.GenerateFromPassword([]byte(*req.Password), bcrypt.DefaultCost)
+		if err != nil {
+			return errmsg.InternalErr.Wrap(err)
+		}
+		passwordStr := string(password)
+		req.Password = &passwordStr
+	}
+
+	err := svc.db.Transaction(func(db *gorm.DB) error {
+		if err := svc.repo.Update(ctx, db, userID, req); err != nil {
+			return err
+		}
+		return nil
+	})
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

@@ -4,6 +4,7 @@ package controller
 import (
 	"mini-blog/internal/dto/request"
 	"mini-blog/internal/dto/response"
+	"mini-blog/internal/pkg/errmsg"
 	"mini-blog/internal/service"
 
 	"github.com/gin-gonic/gin"
@@ -58,4 +59,34 @@ func (h *UserController) Profile(c *gin.Context) {
 	}
 	// 3.返回用户信息
 	response.Success(c, user)
+}
+
+// Update 更新用户信息
+// @Summary 更新用户信息
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param none
+// @Route /users [put]
+func (h *UserController) Update(c *gin.Context) {
+	// 获取当前登入的用户id
+	userID := c.GetString("userID")
+	// 判断 userID 是否存在
+	if userID == "" {
+		c.Error(errmsg.UserNotLogin)
+		return
+	}
+	// 校验参数
+	var req request.UpdateUserRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.Error(err)
+		return
+	}
+	// 调用 service 层, 执行相关业务逻辑
+	if err := h.svc.Update(c.Request.Context(), userID, req); err != nil {
+		c.Error(err)
+		return
+	}
+	// 返回成功信息
+	response.Success(c, nil)
 }

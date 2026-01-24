@@ -75,7 +75,7 @@ func (h *BlogController) ListBlogs(c *gin.Context) {
 
 // GetBlogDetail 获取 Blog 的详细
 // @Summary 获取 Blog 详细
-// @Tags blog
+// @Tags blogs
 // @Accept json
 // @Produce json
 // @Param id path string true 'blogID'
@@ -99,7 +99,7 @@ func (h *BlogController) GetBlogDetail(c *gin.Context) {
 
 // Delete 删除Blog
 // @Summary 删除Blog
-// @Tags blog
+// @Tags blogs
 // @Accept json
 // @Produce json
 // @Param id path string ture "Blog的主键id"
