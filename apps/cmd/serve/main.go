@@ -4,6 +4,8 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
+	"time"
 
 	"mini-blog/internal/config"
 	"mini-blog/internal/controller"
@@ -16,6 +18,7 @@ import (
 	"github.com/redis/go-redis/v9"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 // main 程序的主入口
@@ -32,7 +35,17 @@ func main() {
 	}
 
 	// 2.连接数据库
-	db, err := gorm.Open(postgres.Open(cfg.Datasource.Postgres.Dsn), &gorm.Config{})
+	newLogger := logger.New(
+		log.New(os.Stdout, "\n\r", log.LstdFlags),
+		logger.Config{
+			SlowThreshold: time.Second,
+			Colorful:      true,
+			LogLevel:      logger.Info,
+		},
+	)
+	db, err := gorm.Open(postgres.Open(cfg.Datasource.Postgres.Dsn), &gorm.Config{
+		Logger: newLogger,
+	})
 	if err != nil {
 		log.Fatal("数据库连接错误: %w", err)
 	}

@@ -2,7 +2,10 @@ package repository
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
+	"fmt"
+	"time"
 
 	"mini-blog/internal/dto/errmsg"
 	"mini-blog/internal/dto/request"
@@ -67,8 +70,21 @@ func (repo *BlogRepository) ListBlogs(ctx context.Context, db *gorm.DB, offset, 
 	return blogs, nil
 }
 
+// GetBlogDetail 查询Blog的详细
 func (repo *BlogRepository) GetBlogDetail(ctx context.Context, db *gorm.DB, id string) (model.Blog, error) {
 	var blog model.Blog
+	// 1.先查询redis
+	key := fmt.Sprintf("blogs:%s", id)
+	val, err := repo.rdb.Get(ctx, key).Result()
+	if err == nil {
+		// 缓存命中, 反序列化并返回
+		err = json.Unmarshal([]byte(val), &blog)
+		if err != nil {
+			return model.Blog{}, errmsg.UnmarshalErr
+		}
+		return blog, nil
+	}
+	// 缓存未命中. 查询数据库,并存储到redis中
 	if err := db.WithContext(ctx).Where("id = ?", id).First(&blog).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return model.Blog{}, errmsg.BlogNotFound
@@ -76,5 +92,9 @@ func (repo *BlogRepository) GetBlogDetail(ctx context.Context, db *gorm.DB, id s
 		return model.Blog{}, errmsg.InternalErr.Wrap(err)
 	}
 
+	// 缓存到redis中
+	data, _ := json.Marshal(blog)
+	// 忽略错误, 因为即使redis缓存失败,也不应该发送错误
+	_ = repo.rdb.Set(ctx, key, data, time.Minute*30).Err()
 	return blog, nil
 }

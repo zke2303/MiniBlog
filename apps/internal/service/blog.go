@@ -66,6 +66,7 @@ func (svc *BlogService) Create(ctx context.Context, userID string, req request.C
 	return blog.ID.String(), nil
 }
 
+// ListBlogs 分页查询Blog列表
 func (svc *BlogService) ListBlogs(ctx context.Context, req request.BlogsPageQuery) ([]model.Blog, error) {
 	// 1.防止非法参数
 	offset := 0
@@ -80,6 +81,7 @@ func (svc *BlogService) ListBlogs(ctx context.Context, req request.BlogsPageQuer
 	return svc.repo.ListBlogs(ctx, svc.db, offset, limit, req)
 }
 
+// GetBlogDetail 获取Blog的详细
 func (svc *BlogService) GetBlogDetail(ctx context.Context, id string) (model.Blog, error) {
 	return svc.repo.GetBlogDetail(ctx, svc.db, id)
 }
