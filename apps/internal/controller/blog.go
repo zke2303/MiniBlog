@@ -1,9 +1,9 @@
 package controller
 
 import (
-	"mini-blog/internal/dto/errmsg"
 	"mini-blog/internal/dto/request"
 	"mini-blog/internal/dto/response"
+	"mini-blog/internal/pkg/errmsg"
 	"mini-blog/internal/service"
 
 	"github.com/gin-gonic/gin"

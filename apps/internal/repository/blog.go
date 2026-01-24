@@ -7,9 +7,9 @@ import (
 	"fmt"
 	"time"
 
-	"mini-blog/internal/dto/errmsg"
 	"mini-blog/internal/dto/request"
 	"mini-blog/internal/model"
+	"mini-blog/internal/pkg/errmsg"
 
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"

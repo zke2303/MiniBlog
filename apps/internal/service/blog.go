@@ -3,9 +3,9 @@ package service
 import (
 	"context"
 
-	"mini-blog/internal/dto/errmsg"
 	"mini-blog/internal/dto/request"
 	"mini-blog/internal/model"
+	"mini-blog/internal/pkg/errmsg"
 	"mini-blog/internal/repository"
 
 	"github.com/google/uuid"

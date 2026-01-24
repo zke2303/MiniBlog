@@ -5,8 +5,8 @@ import (
 	"context"
 	"errors"
 
-	"mini-blog/internal/dto/errmsg"
 	"mini-blog/internal/model"
+	"mini-blog/internal/pkg/errmsg"
 
 	"gorm.io/gorm"
 )

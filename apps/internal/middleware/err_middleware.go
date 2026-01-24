@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"mini-blog/internal/dto/errmsg"
 	"mini-blog/internal/dto/response"
+	"mini-blog/internal/pkg/errmsg"
 
 	"github.com/gin-gonic/gin"
 	ut "github.com/go-playground/universal-translator"

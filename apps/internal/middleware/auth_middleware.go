@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strings"
 
-	"mini-blog/internal/dto/errmsg"
+	"mini-blog/internal/pkg/errmsg"
 	"mini-blog/internal/pkg/utils"
 
 	"github.com/gin-gonic/gin"

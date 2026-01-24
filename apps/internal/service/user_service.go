@@ -5,9 +5,9 @@ import (
 	"context"
 	"errors"
 
-	"mini-blog/internal/dto/errmsg"
 	"mini-blog/internal/dto/request"
 	"mini-blog/internal/model"
+	"mini-blog/internal/pkg/errmsg"
 	"mini-blog/internal/pkg/utils"
 	"mini-blog/internal/repository"
 

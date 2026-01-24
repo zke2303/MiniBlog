@@ -4,7 +4,7 @@ package response
 import (
 	"net/http"
 
-	"mini-blog/internal/dto/errmsg"
+	"mini-blog/internal/pkg/errmsg"
 
 	"github.com/gin-gonic/gin"
 )

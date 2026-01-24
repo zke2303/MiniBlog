@@ -4,7 +4,7 @@ package utils
 import (
 	"time"
 
-	"mini-blog/internal/dto/errmsg"
+	"mini-blog/internal/pkg/errmsg"
 
 	"github.com/golang-jwt/jwt/v5"
 )
