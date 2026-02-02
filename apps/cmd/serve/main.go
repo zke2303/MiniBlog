@@ -4,7 +4,6 @@ package main
 import (
 	"fmt"
 	"log"
-	"os"
 	"time"
 
 	"mini-blog/internal/config"
@@ -34,19 +33,24 @@ func main() {
 	if err := common.InitTranslation(); err != nil {
 		log.Fatal("初始化翻译器错误: ", err)
 	}
-
 	// 2.连接数据库
-	newLogger := logger.New(
-		log.New(os.Stdout, "\n\r", log.LstdFlags),
-		logger.Config{
-			SlowThreshold: time.Second,
-			Colorful:      true,
-			LogLevel:      logger.Info,
-		},
-	)
 	db, err := gorm.Open(postgres.Open(cfg.Datasource.Postgres.Dsn), &gorm.Config{
-		Logger: newLogger,
+		Logger: logger.Default.LogMode(logger.Silent), // 生产环境关闭详细 SQL 日志
 	})
+	if err != nil {
+		log.Fatal("连接数据库失败: ", err)
+	}
+
+	sqlDB, err := db.DB()
+	if err != nil {
+		log.Fatal("获取底层数据库连接失败: ", err)
+	}
+
+	// 针对高并发进行优化
+	sqlDB.SetMaxIdleConns(50)
+	sqlDB.SetMaxOpenConns(150) // 略大于测试并发 100
+	sqlDB.SetConnMaxLifetime(10 * time.Minute)
+
 	if err != nil {
 		log.Fatal("数据库连接错误: %w", err)
 	}
@@ -61,7 +65,7 @@ func main() {
 	userRepo := repository.NewUserRepository()
 	blogRepo := repository.NewBlogRepository(rdb)
 	// 4.创建 service 实例对象
-	userService := service.NewUserService(db, userRepo, jwtHandler)
+	userService := service.NewUserService(db, rdb, userRepo, jwtHandler)
 	blogService := service.NewBlogService(blogRepo, db)
 	// 5.创建 controller 实例对象
 	userController := controller.NewUserController(userService)
